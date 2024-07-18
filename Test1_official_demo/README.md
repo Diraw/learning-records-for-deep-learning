@@ -1,6 +1,8 @@
 # learning-records-for-deep-learning
 本文为本人学习深度学习所做，时间24/07/18
+
 看的视频是b站up主霹雳吧啦Wz [2.1 pytorch官方demo(Lenet)](https://www.bilibili.com/video/BV187411T7Ye/?spm_id_from=333.788&vd_source=0ac3c820aa67ba88616bd91e7b19b3d6)
+
 代码也是他提供的 [他的GitHub链接](https://github.com/WZMIAOMIAO/deep-learning-for-image-processing)
 
 # 一、模型的代码
@@ -39,10 +41,12 @@ class Conv2d(_ConvNd):
     over an input signal composed of several input planes."""
 ```
 
+
 $$
 \text{out}(N_i, C_{\text{out}_j}) = \text{bias}(C_{\text{out}_j}) +
 \sum_{k = 0}^{C_{\text{in}} - 1} \text{weight}(C_{\text{out}_j}, k) \star \text{input}(N_i, k)
 $$
+
 
 ```python
 def __init__(
@@ -63,8 +67,11 @@ def __init__(
 pytorch tenser的通道顺序：[batch,channel,height,width]
 
 `self.conv1 = nn.Conv2d(3, 16, 5)`
+
 第一个参数：输入的深度3，因为输入的是彩色图片，RGB有三个channel
+
 第二个参数：卷积核的个数是16
+
 第三个参数：卷积核的尺寸是 $5\times 5$
 
 根据公式：经卷积后的矩阵尺寸大小：$N=(W-F+2P)/S+1$
@@ -75,14 +82,23 @@ pytorch tenser的通道顺序：[batch,channel,height,width]
 > 4.padding 的像素数 $P$
 
 `x = F.relu(self.conv1(x))    # input(3, 32, 32) output(16, 28, 28)`
+
 input(3, 32, 32)，输入是一个 $3\times 32\times 32$ 的图片，所以 $W=32$
+
 卷积核的大小 $F=5$
+
 padding $P=0$
+
 stride $S=1$
+
 带进去算的话，$N=(32-5+0)/1+1=28$
+
 所以输出矩阵尺寸是 $28\times 28$ 的，output(16, 28, 28)
+
 因为我们使用了16个卷积核，所以第一个参数channel变成了16
+
 pytorch tenser的通道顺序：[batch,channel,height,width]，这里是没有把batch写出来的，只写了channel、高度、宽度
+
 ## 2、第二个池化层
 `self.pool1 = nn.MaxPool2d(2, 2)`
 `class MaxPool2d(_MaxPoolNd):`没有定义构造函数，遂进入父类
@@ -109,15 +125,24 @@ class _MaxPoolNd(Module):
         self.ceil_mode = ceil_mode
 ```
 `self.pool1 = nn.MaxPool2d(2, 2)`
+
 第一个参数：池化核大小 $2\times 2$
+
 第二个参数：步距为2
+
 在上一个卷积层我们的输出为`output(16, 28, 28)`
+
 经过池化层之后`x = self.pool1(x) # output(16, 14, 14)`
+
 池化层不改变矩阵的深度，只改变高度和宽度，所以深度依然是16，高和宽减半
+
 ## 3、第二个卷积层
 `self.conv2 = nn.Conv2d(16, 32, 5)`
+
 因为上一个池化层出来的深度为16，所以第一个参数channel变成了16
+
 我们采用32个卷积核，每个卷积核尺寸为5
+
 根据公式：经卷积后的矩阵尺寸大小：$N=(W-F+2P)/S+1$
 
 > 1.输入图片大小 $W\times W$
@@ -126,24 +151,38 @@ class _MaxPoolNd(Module):
 > 4.padding 的像素数 $P$
 
 输出图片的大小为 $14\times 14$
+
 padding看池化层的代码，默认为0，步距看卷积层的代码，默认为1
+
 因此输出的矩阵尺寸为(14-5+0)/1+1=10
+
 所以输出`x = F.relu(self.conv2(x)) # output(32, 10, 10)`
+
 可以看到输出`output(32, 10, 10)`是 $32\times 10\times 10$
+
 ## 4、第二个池化层
 `self.pool2 = nn.MaxPool2d(2, 2)`
+
 池化核个数为2，步距为2
+
 `x = self.pool2(x) # output(32, 5, 5)`
+
 输出深度不变，尺寸减半
+
 ## 5、三个全连接层
+
 全连接层的输入是一个一维的向量，所以我们需要把我们的 $32\times 5\times 5$ 的特征矩阵展成1维
+
 所以第一个全连接层`self.fc1 = nn.Linear(32*5*5, 120)`，输出的节点是 $32\times 5\times 5$ 这么多个，然后他自己的节点个数我们设置为是120
+
 后面两行代码便不难理解
+
 ```python
 self.fc2 = nn.Linear(120, 84)
 self.fc3 = nn.Linear(84, 10)
 ```
 最后的输出为10，是因为我们使用的是CIFAR-10这个数据集，有10个类别
+
 ## 6、正向传播过程
 ```python
 def forward(self, x):
@@ -158,8 +197,11 @@ def forward(self, x):
     return x
 ```
 `F.relu()`是RELU激活函数
+
 我们通过`x = x.view(-1, 32*5*5)`这个view方法将矩阵展成一维，由于x的形状是`(batch_size, 32, 5, 5)`，因此总元素数量是`batch_size * 32 * 5 * 5`，-1告诉PyTorch自动推断出第一个维度（batch）的大小，以确保张量的总元素数量保持不变
+
 这里我们没有用softmax函数，是因为我们这个模型使用的loss函数里自带了一个softmax函数
+
 # 二、训练代码
 ## 1、导入训练集
 ```python
@@ -168,7 +210,9 @@ transform = transforms.Compose( #transform预处理函数
      transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 ```
 先定义了一个预处理函数
+
 `Compose`将处理打包成一个整体
+
 ```python
 class ToTensor:
     """Convert a PIL Image or ndarray to tensor 
@@ -180,7 +224,9 @@ Converts a PIL Image or numpy.
 ndarray (H x W x C) in the range[0, 255] to a torch.
 FloatTensor of shape (C x H x W) in the range [0.0, 1.0]
 ```
+
 一个是变换维度的顺序，一个是进行归一化
+
 ```python
 class Normalize(torch.nn.Module):
     """Normalize a tensor image with mean and standard deviation.
@@ -195,6 +241,7 @@ class Normalize(torch.nn.Module):
         self.std = std
         self.inplace = inplace
 ```
+
 `Normalize`进行标准化，mean为均值，std为标准差
 
 ```python
@@ -206,9 +253,13 @@ class Normalize(torch.nn.Module):
         download=True, 
         transform=transform)
 ```
+
 `root`为下载数据的保存地址，这里的相对路径指的是你的终端所在位置的相对路径，并不是你的文件所在位置的相对路径，如果你用vscode打开的外层文件夹，他会把这个文件下载到外面去
+
 `train`如果为True，导入的就是训练集
+
 `download`其实可以一直为true，它会自动检验
+
 `transform`使用我们刚才定义的预处理函数
 
 ```python
@@ -216,40 +267,54 @@ class Normalize(torch.nn.Module):
         train_set, batch_size=36,
         shuffle=True, num_workers=0)
 ```
+
 将训练集导入分为一个批次一个批次的数据
+
 `batch_size`每一批次36张图片
+
 `shuffle`是否要将数据集打乱，一般为True
+
 `num_workers`在windows环境下必须为0
+
 ## 2、导入测试集
 ```python
     val_set = torchvision.datasets.CIFAR10(
         root='./data', train=False,
         download=False, transform=transform)
 ```
+
 `train`为False，所以导入的是测试集
+
 ```python
 val_loader = torch.utils.data.DataLoader(
         val_set, batch_size=10000,
         shuffle=False, num_workers=0)
 ```
+
 `batch_size`设置为10000，一次性全部导入
+
 ```python
 val_data_iter = iter(val_loader)
 val_image, val_label = next(val_data_iter)
 ```
+
 将导入的测试集转化为迭代器，通过next一批一批获取数据
+
 ## 3、其他准备
 ```python
 classes = ('plane', 'car', 'bird', 'cat', 
            'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 ```
+
 导入分类的十个类型，index0对应的plane
+
 ```python
 net = LeNet() #实例化model里面定义的模型
 loss_function = nn.CrossEntropyLoss() #定义损失函数
 optimizer = optim.Adam(net.parameters(), lr=0.001) 
 #选用Adam优化器，传入网络中所有的参数，lr是学习率learning rate
 ```
+
 ```python
 class BCEWithLogitsLoss(_Loss):
     r"""This loss combines a `Sigmoid` layer and 
@@ -258,7 +323,9 @@ class BCEWithLogitsLoss(_Loss):
         :class:`~torch.nn.LogSoftmax`on an input, 
         followed by :class:`~torch.nn.NLLLoss`."""
 ```
+
 这个损失函数里包含了softmx函数的效果
+
 ## 4、训练过程
 ```python
 for epoch in range(5): #epoch代表循环迭代多少次
