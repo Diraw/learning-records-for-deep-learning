@@ -1,4 +1,4 @@
-# learning-records-for-deep-learning
+# Lenet
 本文为本人学习深度学习所做，时间24/07/18
 
 看的视频是b站up主霹雳吧啦Wz [2.1 pytorch官方demo(Lenet)](https://www.bilibili.com/video/BV187411T7Ye/?spm_id_from=333.788&vd_source=0ac3c820aa67ba88616bd91e7b19b3d6)
