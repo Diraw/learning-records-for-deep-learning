@@ -140,7 +140,7 @@ class InceptionAux(nn.Module):
     def __init__(self, in_channels, num_classes):
         super(InceptionAux, self).__init__()
         self.averagePool = nn.AvgPool2d(kernel_size=5, stride=3)
-        self.conv = BasicConv2d(in_channels, 128, kernel_size=1)  # output[batch, 128, 4, 4]
+        self.conv = BasicConv2d(in_channels, 128, kernel_size=1)
 
         self.fc1 = nn.Linear(2048, 1024)
         self.fc2 = nn.Linear(1024, num_classes)
