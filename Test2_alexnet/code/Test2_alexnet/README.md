@@ -1,4 +1,4 @@
-> AlexNet.pth这个文件有55M，GitHub最多上传50M的文件，所以这个权重文件损坏了，遂删除😂
+> AlexNet.pth这个文件有55M，但GitHub最多上传50M的文件，所以这个权重文件损坏了，遂删除😂
 
 > 主要是应该没人会来看我的repo吧hhh
 # AlexNet
