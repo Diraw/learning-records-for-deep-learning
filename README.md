@@ -12,3 +12,7 @@
 **24/07/22 VGGNet** [视频链接](https://www.bilibili.com/video/BV1i7411T7ZN/?spm_id_from=333.788&vd_source=0ac3c820aa67ba88616bd91e7b19b3d6) [我的笔记](https://github.com/Diraw/learning-records-for-deep-learning/tree/main/Test3_vggnet)
 
 VGG之前用过它的风格迁移模型，不过这次由于我们的目标是ResNet和EffectiveNet，所以VGG就没训练了，后面如果要做迁移学习的话可能会再回来
+
+**24/07/22 VGGNet** [视频链接](https://www.bilibili.com/video/BV1r7411T7M5/?spm_id_from=333.788&vd_source=0ac3c820aa67ba88616bd91e7b19b3d6) [我的笔记](https://github.com/Diraw/learning-records-for-deep-learning/tree/main/Test4_googlenet)
+
+感觉从GoogleNet开始，这个卷积神经网络就开始卷起来了，这么复杂的结构，这是怎么能想到的，越学就越惊叹，特别是GoogleNet中那个Inception的并行结构，这个想法真的是很厉害，比传统的思想，即不断堆叠卷积层，创新
